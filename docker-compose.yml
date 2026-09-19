@@ -1,0 +1,25 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - nomade-mongo:/data/db
+    ports:
+      - "27017:27017"
+  backend:
+    build: ./backend
+    environment:
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/nomade
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+volumes:
+  nomade-mongo:
